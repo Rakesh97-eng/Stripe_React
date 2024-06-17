@@ -96,6 +96,7 @@ const createSubscription =async (req,res)=>{
       default_payment_method: req.body.paymentMethod,
     },
   });
+  const endpointSecret = "whsec_278aefb6adb09f582846b332b53164b6a9801fc8f67c272f8fceffe22647d184";
 
 
   // get the price id from the front-end
@@ -118,10 +119,47 @@ const createSubscription =async (req,res)=>{
   });
   console.log("loggg",subscription);
   // return the client secret and subscription id
+
+
   res.send ({
     clientSecret: subscription.latest_invoice.payment_intent.client_secret,
     subscriptionId: subscription.id,
   })
 }
+
+
+   
+const handleWebhook = (req, res) => {
+  const sig = req.headers['stripe-signature'];
+
+  console.log("/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.log(`Webhook signature verification failed.`, err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  // Handle the event
+  switch (event.type) {
+    case 'invoice.payment_succeeded':
+      const invoice = event.data.object;
+      console.log(`Invoice payment succeeded for invoice: ${invoice.id}`);
+      // Handle successful payment here
+      break;
+    case 'customer.subscription.deleted':
+      const subscription = event.data.object;
+      console.log(`Subscription deleted: ${subscription.id}`);
+      // Handle subscription cancellation here
+      break;
+    // Add more event types as needed
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.send();                             
+};
+
     
-    module.exports={createCustomer,createSubscription}
+    module.exports={createCustomer,createSubscription,handleWebhook}

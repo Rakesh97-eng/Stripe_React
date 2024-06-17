@@ -9,5 +9,5 @@ const router = require("./routes/striperoute")
 
 
 app.use("/", router)
-app.listen(3030)
+app.listen(4242)
 console.log("server running at port 3030")

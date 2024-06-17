@@ -9,7 +9,7 @@ const stripePromise = loadStripe('pk_test_51PA4qHSAewgQma7fPw5zsBvPfTifE31ZXI3PN
 export default function Checkout() {
     
   return (
-    <Elements stripe={stripePromise}  >
+    <Elements stripe={stripePromise}  options={{ mode: 'setup', currency: 'usd' }} >
       <CheckoutForm />
  </Elements>
   );

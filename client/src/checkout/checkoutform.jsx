@@ -29,7 +29,7 @@ function CheckoutForm() {
       console.log("paymentmethod",paymentMethod);
 
       // call the backend to create subscription
-      const response = await fetch("http://localhost:3030/create-subscription", {
+      const response = await fetch("http://localhost:4242/create-subscription", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
